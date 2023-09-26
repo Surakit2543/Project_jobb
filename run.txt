@@ -1,0 +1,5 @@
+vue
+-npm run serve
+django
+activate venv
+python manage.py runserver
