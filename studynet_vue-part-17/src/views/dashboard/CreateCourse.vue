@@ -119,9 +119,26 @@ export default {
         submitForm(status) {
             console.log('submitForm')
             console.log(this.form)
-
+            var isError = false;
+            if(this.form?.title == undefined || this.form?.title == ''){
+                console.log('cannot submitForm')
+                this.$swal('Title cannot empty','','warning');
+                return
+            }
+            if(this.form?.lessons?.length > 0){
+                this.form?.lessons?.forEach((item)=>{
+                    if(item?.title == undefined || item?.title == ''){
+                        isError = true;
+                    }
+                })
+                if(isError){
+                    this.$swal('Lessons Title cannot empty','','warning');
+                    return
+                }
+            }
+            
             this.form.status = status
-
+            this.$swal('Save','','success');
             axios
                 .post('courses/create/', this.form)
                 .then(response => {

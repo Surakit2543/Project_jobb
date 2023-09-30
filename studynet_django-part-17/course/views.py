@@ -14,7 +14,10 @@ from .serializers import CourseListSerializer, CourseDetailSerializer, LessonLis
 @api_view(['POST'])
 def create_course(request):
     status = request.data.get('status')
-
+    if(request.data.get('title').strip() == False):
+        return Response({'Error': 'Course title is Empty'})
+       
+    
     print(request.data)
 
     if status == 'published':
