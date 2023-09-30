@@ -1,1 +1,3 @@
+# add .env file to .gitignore
+
 studynet_django-part-17/
