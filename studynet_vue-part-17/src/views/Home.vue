@@ -2,7 +2,7 @@
   <div class="home">
     <div class="hero is-info is-medium">
       <div class="hero-body has-text-centered">
-        <h1 class="title">Welcome to StudyNet</h1>
+        <h1 class="title">Welcome to Net</h1>
 
         <h2 class="subtitle">An online place for learning what you want</h2>
       </div>

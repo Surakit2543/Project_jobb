@@ -95,7 +95,7 @@ export default {
                 short_description: '',
                 long_description: '',
                 categories: [],
-                status: '',
+                status: '',//published , draft
                 lessons: []
             },
             categories: [],
@@ -120,33 +120,27 @@ export default {
             console.log('submitForm')
             console.log(this.form)
             var isError = false;
-            if(this.form?.title == undefined || this.form?.title == ''){
-                console.log('cannot submitForm')
-                this.$swal('Title cannot empty','','warning');
+            
+            status = 'published';
+            this.form.status = status;
+            if(this.validateError()){
                 return
             }
-            if(this.form?.lessons?.length > 0){
-                this.form?.lessons?.forEach((item)=>{
-                    if(item?.title == undefined || item?.title == ''){
-                        isError = true;
-                    }
-                })
-                if(isError){
-                    this.$swal('Lessons Title cannot empty','','warning');
-                    return
-                }
-            }
-            
-            this.form.status = status
-            this.$swal('Save','','success');
             axios
                 .post('courses/create/', this.form)
                 .then(response => {
                     console.log(response.data)
+                    this.$swal('Save','','success')
+                        .then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload()
+                        }
+                        })
                 })
                 .catch(error => {
                     console.log('error:', error)
                 })
+                
         },
         addLesson() {
             console.log('addLesson')
@@ -156,6 +150,29 @@ export default {
                 short_description: '',
                 long_description: ''
             })
+        },
+        validateError(){
+            if(this.form?.title == undefined || this.form?.title == ''){
+                console.log('cannot submitForm')
+                this.$swal('Title cannot empty','','warning');
+                return true
+            }
+            if(this.form?.categories.length == 0){
+                this.$swal('categories cannot empty','','warning');
+                return true
+            }
+            if(this.form?.lessons?.length > 0){
+                this.form?.lessons?.forEach((item)=>{
+                    if(item?.title == undefined || item?.title == ''){
+                        isError = true;
+                    }
+                })
+                if(isError){
+                    this.$swal('Lessons Title cannot empty','','warning');
+                    return true
+                }
+            }
+            return false
         }
     }
 }
