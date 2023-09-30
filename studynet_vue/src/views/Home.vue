@@ -15,9 +15,9 @@
             <div class="box has-text-centered">
               <span class="icon is-size-2 has-text-info"><i class="far fa-clock"></i></span>
 
-              <h2 class="is-size-4 mt-4 mb-4">TEST</h2>
+              <h2 class="is-size-4 mt-4 mb-4">TEST 1</h2>
 
-              <p>TEST</p>
+              <p>TEST 1</p>
             </div>
           </div>
 
@@ -25,9 +25,9 @@
             <div class="box has-text-centered">
               <span class="icon is-size-2 has-text-info"><i class="far fa-comments"></i></span>
 
-              <h2 class="is-size-4 mt-4 mb-4">TEST</h2>
+              <h2 class="is-size-4 mt-4 mb-4">TEST 2</h2>
 
-              <p>TEST</p>
+              <p>TEST 2</p>
             </div>
           </div>
 
@@ -35,9 +35,9 @@
             <div class="box has-text-centered">
               <span class="icon is-size-2 has-text-info"><i class="fas fa-home"></i></span>
 
-              <h2 class="is-size-4 mt-4 mb-4">TEST</h2>
+              <h2 class="is-size-4 mt-4 mb-4">TEST 3</h2>
 
-              <p>TEST</p>
+              <p>TEST 3</p>
             </div>
           </div>
 
