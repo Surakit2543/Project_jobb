@@ -13,6 +13,8 @@
     "core-js": "^3.6.5",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
+    "vue-sweetalert2": "^5.0.5",
+    "vue-underscore": "^0.1.4",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {

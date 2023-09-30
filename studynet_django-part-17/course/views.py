@@ -14,11 +14,14 @@ from .serializers import CourseListSerializer, CourseDetailSerializer, LessonLis
 @api_view(['POST'])
 def create_course(request):
     status = request.data.get('status')
-
+       
+    
     print(request.data)
+    print('status')
+    print(status)
 
-    if status == 'published':
-        status = 'draft'
+    # if status == 'published':
+    #     status = 'draft'
 
     course = Course.objects.create(
         title=request.data.get('title'),

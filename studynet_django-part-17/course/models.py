@@ -66,6 +66,9 @@ class Lesson(models.Model):
         (VIDEO, 'Video'),
     )
 
+    def __str__(self):
+        return self.title
+    
     course = models.ForeignKey(Course, related_name='lessons', on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     slug = models.SlugField()
