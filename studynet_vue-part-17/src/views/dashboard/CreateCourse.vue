@@ -70,10 +70,77 @@
                         <textarea class="textarea" v-model="lesson.long_description" :name="`form.lessons[${index}][long_description]`"></textarea>
                     </div>
 
+                    <div class="field">
+                        <label>Lesson type</label><br>
+                        <div class="select">
+                            <select v-model="lesson.type">
+                                <option 
+                                    v-for="lesson in lessonType"
+                                    v-bind:key="lesson"
+                                    v-bind:value="lesson"
+                                >
+                                    {{ lesson }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="field" v-if="lesson.type == 'Quiz'">
+                        <div>
+                            <label>question</label>
+                            <input 
+                                type="text" 
+                                class="input" 
+                                v-model="lesson.quiz.question"
+                                :name="`form.lessons[${index}][quiz][question]`"
+                            >
+                            <label>answer</label>
+                            <input 
+                                type="text" 
+                                class="input" 
+                                v-model="lesson.quiz.answer"
+                                :name="`form.lessons[${index}][quiz][answer]`"
+                            >
+                            <label>op1</label>
+                            <input 
+                                type="text" 
+                                class="input" 
+                                v-model="lesson.quiz.op1"
+                                :name="`form.lessons[${index}][quiz][op1]`"
+                            >
+                            <label>op2</label>
+                            <input 
+                                type="text" 
+                                class="input" 
+                                v-model="lesson.quiz.op2"
+                                :name="`form.lessons[${index}][quiz][op2]`"
+                            >
+                            <label>op3</label>
+                            <input 
+                                type="text" 
+                                class="input" 
+                                v-model="lesson.quiz.op3"
+                                :name="`form.lessons[${index}][quiz][op3]`"
+                            >
+                        </div>
+                        
+                    </div>
+
+                    <div class="field" v-if="lesson.type == 'Video'">
+                        <label>Youtube id</label>
+                        <input 
+                            type="text" 
+                            class="input" 
+                            v-model="lesson.youtube_id"
+                            :name="`form.lessons[${index}][youtube_id]`"
+                        >
+                    </div>
+
                     <hr>
                 </div>
 
                 <button class="button is-primary" @click="addLesson()">Add lesson</button>
+                <button class="ml-3 button is-danger" v-if="form.lessons.length > 0" @click="deleteLesson()">delete lesson</button>
             </div>
 
             <div class="field buttons">
@@ -99,6 +166,7 @@ export default {
                 lessons: []
             },
             categories: [],
+            lessonType: ["Article","Quiz","Video"]
         }
     },
     mounted() {
@@ -119,7 +187,7 @@ export default {
         submitForm(status) {
             console.log('submitForm')
             console.log(this.form)
-            var isError = false;
+            
             
             status = 'published';
             this.form.status = status;
@@ -148,10 +216,23 @@ export default {
             this.form.lessons.push({
                 title: '',
                 short_description: '',
-                long_description: ''
+                long_description: '',
+                type : 'Article',
+                youtube_id : '',
+                quiz:{
+                    question:'',
+                    answer:'',
+                    op1:'',
+                    op2:'',
+                    op3:''
+                }
             })
         },
+        deleteLesson(){
+            this.form.lessons.pop();
+        },
         validateError(){
+            var isError = false;
             if(this.form?.title == undefined || this.form?.title == ''){
                 console.log('cannot submitForm')
                 this.$swal('Title cannot empty','','warning');

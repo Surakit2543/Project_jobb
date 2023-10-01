@@ -8,7 +8,7 @@ from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
-from .models import Course, Lesson, Comment, Category
+from .models import Course, Lesson, Comment, Category, Quiz
 from .serializers import CourseListSerializer, CourseDetailSerializer, LessonListSerializer, CommentsSerializer, CategorySerializer, QuizSerializer, UserSerializer
 
 @api_view(['POST'])
@@ -40,14 +40,35 @@ def create_course(request):
     # Lessons
 
     for lesson in request.data.get('lessons'):
+        type = lesson.get('type')
+        if(type == 'Article'):
+            type = Lesson.ARTICLE
+        elif(type == 'Quiz'):
+            type = Lesson.QUIZ
+        elif (type == 'Video'):
+            type = Lesson.VIDEO
+        
         tmp_lesson = Lesson.objects.create(
             course=course,
             title=lesson.get('title'),
             slug=slugify(lesson.get('title')),
             short_description=lesson.get('short_description'),
             long_description=lesson.get('long_description'),
-            status=Lesson.DRAFT
+            status=Lesson.DRAFT,
+            lesson_type = type,
+            youtube_id=lesson.get('youtube_id')
         )
+        if(type == Lesson.QUIZ):
+            quiz = lesson.get('quiz')
+            Quiz.objects.create(
+                lesson = tmp_lesson,
+                question = quiz.get('question'),
+                answer = quiz.get('answer'),
+                op1 = quiz.get('op1'),
+                op2 = quiz.get('op2'),
+                op3 = quiz.get('op3')
+            )
+
 
     return Response({'course_id': course.id})
 
