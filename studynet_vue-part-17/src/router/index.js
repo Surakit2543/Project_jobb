@@ -54,7 +54,7 @@ const routes = [
     component: MyAccount
   },
   {
-    path: '/dashboard/create-course',
+    path: '/dashboard/create-course/:slug',
     name: 'CreateCourse',
     component: CreateCourse
   }

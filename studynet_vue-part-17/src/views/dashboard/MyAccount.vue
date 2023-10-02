@@ -17,7 +17,7 @@
           v-for="course in courses"
           v-bind:key="course.id"
         >
-          <CourseItem :course="course" />
+          <CourseItem :course="course" :isEdit='true' />
         </div>
       </div>
 

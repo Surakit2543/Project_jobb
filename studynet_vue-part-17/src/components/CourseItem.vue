@@ -15,8 +15,8 @@
 
             <div class="content">
                 <p>{{ course.short_description }}</p>
-
                 <router-link :to="{name: 'Course', params: {slug: course.slug}}">More</router-link>
+                <router-link style="color: red;" v-if="isEdit" class="ml-3" :to="{name: 'CreateCourse', params: {slug: course.slug}}">Edit</router-link>
             </div>
         </div>
     </div>
@@ -24,6 +24,6 @@
 
 <script>
 export default {
-    props: ['course']
+    props: ['course','isEdit'],
 }
 </script>

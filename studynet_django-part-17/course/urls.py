@@ -8,6 +8,8 @@ urlpatterns = [
     path('get_categories/', views.get_categories),
     path('get_author_courses/<int:user_id>/', views.get_author_courses),
     path('create/', views.create_course),
+    path('edit/<slug:id>', views.edit_course),
+    path('delete/<slug:id>', views.delete_course),
     path('<slug:slug>/', views.get_course),
     path('<slug:course_slug>/<slug:lesson_slug>/', views.add_comment),
     path('<slug:course_slug>/<slug:lesson_slug>/get-comments/', views.get_comments),
