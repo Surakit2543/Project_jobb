@@ -285,12 +285,12 @@ export default {
       formData.append('categories', this.form.categories.join(',')); // Assuming categories is an array
       formData.append('status', this.form.status);
       formData.append('lessons', JSON.stringify(this.form.lessons)); // Assuming lessons is an array
-      formData.append('image', formData);
+      formData.append('image', this.form.Image);
       if (this.validateError()) {
         return;
       }
       axios
-        .post("courses/create/", this.form, {
+        .post("courses/create/", formData, {
           headers: {
             "Content-Type": "multipart/form-data", // Important for file uploads
           },
