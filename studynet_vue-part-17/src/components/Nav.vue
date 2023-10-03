@@ -9,12 +9,14 @@
                 <router-link to="/" class="navbar-item">Home</router-link>
                 <router-link to="/about" class="navbar-item">About</router-link>
                 <router-link to="/courses" class="navbar-item">Courses</router-link>
+                
             </div>
 
             <div class="navbar-end">
                 <div class="navbar-item">
                     <div class="buttons">
                         <template v-if="$store.state.user.isAuthenticated">
+                            <router-link to="/dashboard/my-course" class="navbar-item button is-primary is-light">My Courses</router-link>
                             <router-link to="/dashboard/create-course/new" id="createCourseBtn" class="button is-primary">Create course</router-link>
                             <router-link to="/dashboard/my-account" class="button is-info">My account</router-link>
                         </template>

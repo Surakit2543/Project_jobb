@@ -1,3 +1,9 @@
+<style>
+.resized-image {
+    max-width: 500px;
+    max-height: 500px;
+  }
+</style>
 <template>
   <div class="about">
     <div class="hero is-info">
@@ -40,6 +46,20 @@
               </option>
             </select>
           </div>
+        </div>
+
+        <div class="field">
+          <label>Image(.jpg, .jpeg, .png)</label>
+          <input
+            type="file"
+            id="fileInput"
+            name="file"
+            accept=".jpg, .jpeg, .png"
+            @change="handleFileChange"
+          />
+          <figure class="image  resized-image">
+                <img :src="form.get_image" alt="Placeholder image" class="resized-image">
+            </figure>
         </div>
       </div>
 
@@ -89,7 +109,7 @@
                   v-for="lType in lessonType"
                   v-bind:key="lType"
                   v-bind:value="lType"
-                  @change="changeLessonType(lesson,lType)"
+                  @change="changeLessonType(lesson, lType)"
                 >
                   {{ lType }}
                 </option>
@@ -198,6 +218,7 @@ export default {
         categories: [],
         status: "", //published , draft
         lessons: [],
+        Image: null,
       },
       categories: [],
       lessonType: ["article", "quiz", "video"],
@@ -217,28 +238,28 @@ export default {
         this.form.lessons = response.data.lessons;
 
         this.form.lessons.forEach(async (item) => {
-          item.quiz= {
+          item.quiz = {
             question: "",
             answer: "",
             op1: "",
             op2: "",
             op3: "",
-          }
+          };
           if (item.lesson_type == "quiz") {
-            console.log(item)
+            console.log(item);
             var newquiz = await axios.get(
               `courses/${response.data.course.slug}/${item.slug}/get-quiz/`
             );
-            console.log("response")
-            console.log(newquiz)
+            console.log("response");
+            console.log(newquiz);
             item.quiz = newquiz.data;
             console.log("item quiz");
             console.log(item.quiz);
           }
         });
       });
-    }else{
-        console.log("new new new")
+    } else {
+      console.log("new new new");
     }
   },
   methods: {
@@ -256,12 +277,24 @@ export default {
       console.log(this.form);
       status = "published";
       this.form.status = status;
-      this.form.title = this.form.title.trim()
+      this.form.title = this.form.title.trim();
+      const formData = new FormData();
+      formData.append('title', this.form.title);
+      formData.append('short_description', this.form.short_description);
+      formData.append('long_description', this.form.long_description);
+      formData.append('categories', this.form.categories.join(',')); // Assuming categories is an array
+      formData.append('status', this.form.status);
+      formData.append('lessons', JSON.stringify(this.form.lessons)); // Assuming lessons is an array
+      formData.append('image', formData);
       if (this.validateError()) {
         return;
       }
       axios
-        .post("courses/create/", this.form)
+        .post("courses/create/", this.form, {
+          headers: {
+            "Content-Type": "multipart/form-data", // Important for file uploads
+          },
+        })
         .then((response) => {
           console.log(response.data);
           this.$swal("create", "", "success").then((result) => {
@@ -275,8 +308,20 @@ export default {
         });
     },
     editForm() {
+      const formData = new FormData();
+      formData.append('title', this.form.title.trim());
+      formData.append('short_description', this.form.short_description);
+      formData.append('long_description', this.form.long_description);
+      formData.append('categories', this.form.categories.join(',')); // Assuming categories is an array
+      formData.append('status', this.form.status);
+      formData.append('lessons', JSON.stringify(this.form.lessons)); // Assuming lessons is an array
+      formData.append('image', this.form.Image);
       axios
-        .put(`courses/edit/${this.form.id}`, this.form)
+        .put(`courses/edit/${this.form.id}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data", // Important for file uploads
+          },
+        })
         .then((response) => {
           console.log(response.data);
           this.$swal("save", "", "success").then((result) => {
@@ -371,19 +416,34 @@ export default {
       }
       return false;
     },
-    changeLessonType(lesson,type){
-      console.log('changeLessonType')
-      console.log(lesson)
-      if(type == 'quiz'){
+    changeLessonType(lesson, type) {
+      console.log("changeLessonType");
+      console.log(lesson);
+      if (type == "quiz") {
         lesson.quiz = {
           question: "",
           answer: "",
           op1: "",
           op2: "",
           op3: "",
-        }
+        };
       }
-    }
+    },
+    handleFileChange(event) {
+      this.form.Image = event.target.files[0];
+      const fileInput = event.target;
+      const selectedFile = fileInput.files[0];
+
+      if (selectedFile) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.form.get_image = e.target.result; // Update the form.get_image property
+        };
+        reader.readAsDataURL(selectedFile);
+      } else {
+        this.form.get_image = null; // Reset the form.get_image property if no file selected
+      }
+    },
   },
 };
 </script>

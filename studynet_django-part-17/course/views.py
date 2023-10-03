@@ -10,7 +10,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 
 from .models import Course, Lesson, Comment, Category, Quiz
 from .serializers import CourseListSerializer, CourseDetailSerializer, LessonListSerializer, CommentsSerializer, CategorySerializer, QuizSerializer, UserSerializer
-
+import json
 @api_view(['POST'])
 def create_course(request):
     status = request.data.get('status')
@@ -29,7 +29,8 @@ def create_course(request):
         short_description=request.data.get('short_description'),
         long_description=request.data.get('long_description'),
         status=status,
-        created_by=request.user
+        created_by=request.user,
+        image=request.FILES.get('image')
     )
 
     for id in request.data.get('categories'):
@@ -38,8 +39,10 @@ def create_course(request):
     course.save()
 
     # Lessons
+    lessons_json = request.POST.get('lessons', '[]')
+    lessons = json.loads(lessons_json)
 
-    for lesson in request.data.get('lessons'):
+    for lesson in lessons:
         type = lesson.get('lesson_type')
         if(type == 'article'):
             type = Lesson.ARTICLE
@@ -74,24 +77,36 @@ def create_course(request):
 
 @api_view(['PUT'])
 def edit_course(request,id):
-    print("yeah")
-    # print(request.data)
-    print("pk")
-    # print(pk)
     print("yeah course")
     print(id)
+    print(request.data)
+    print(request.FILES.get('image'))
     course = Course.objects.get(id=id)
     course.title=request.data.get('title')
     course.short_description=request.data.get('short_description')
     course.long_description=request.data.get('long_description')
+    if(request.FILES.get('image') is not None):
+        course.image=request.FILES.get('image')
+    course.save()
     lesson_serializer = LessonListSerializer(course.lessons.all(), many=True)
     #v2
-    if lesson_serializer is not None:
+    print("lesson_serializer")
+    if lesson_serializer is not None and len(lesson_serializer.data) > 0:
+        print('lesson_serializer is not none ')
+        print(lesson_serializer.data)
         for item in lesson_serializer.data:
+            print("item")
+            print(item)
             lesson = Lesson.objects.get(id=item['id'])
             lesson.delete()
         
-        for lesson in request.data.get('lessons'):
+    print('\n\nlessons\n\n')
+    print(request.data.get('lessons'))
+    lessons_json = request.POST.get('lessons', '[]')
+    lessons = json.loads(lessons_json)
+
+    if lessons is not None:
+        for lesson in lessons:
             type = lesson.get('lesson_type')
             if(type == 'article'):
                 type = Lesson.ARTICLE
@@ -121,93 +136,6 @@ def edit_course(request,id):
                     op3 = quiz.get('op3')
                 )
 
-    # v1
-    # newlesson = request.data.get('lessons')
-    # print("newlesson")
-    # print(newlesson)
-    # print("lesson_serializer")
-    # print(lesson_serializer.data)
-    # if(lesson_serializer is not None):
-    #     for index,item in enumerate(lesson_serializer.data):
-    #         selected = next((l for l in newlesson if l["id"] == item["id"]), False)
-    #         print("selected")
-    #         print(selected)
-    #         print("item")
-    #         print(item)
-    #         if (selected):
-    #             item = Lesson.objects.get(id=selected['id'])
-    #             if(item is not None):
-    #                 newtype = selected['lesson_type']
-    #                 if(newtype == 'article'):
-    #                     newtype = Lesson.ARTICLE
-    #                 elif(newtype == 'quiz'):
-    #                     newtype = Lesson.QUIZ
-    #                 elif (newtype == 'video'):
-    #                     newtype = Lesson.VIDEO
-    #                 type = newtype
-    #                 if(type == Lesson.QUIZ):
-    #                     selectedQuiz = selected['quiz']
-    #                     quiz = Quiz.objects.get(id=selectedQuiz['id'])
-    #                     if quit is not None:
-    #                         quiz.answer = selectedQuiz['answer']
-    #                         quiz.op1 = selectedQuiz['op1']
-    #                         quiz.op2 = selectedQuiz['op2']
-    #                         quiz.op3 = selectedQuiz['op3']
-    #                         quiz.question = selectedQuiz['question']
-    #                         quiz.save()
-    #                     else :
-    #                         Quiz.objects.create(
-    #                             lesson = item,
-    #                             question = selectedQuiz['question'],
-    #                             answer = selectedQuiz['answer'],
-    #                             op1 = selectedQuiz['op1'],
-    #                             op2 = selectedQuiz['op2'],
-    #                             op3 = selectedQuiz['op3']
-    #                         )
-                    
-    #                 item.long_description = selected['long_description']
-    #                 item.short_description= selected['short_description']
-    #                 item.title = selected['title']
-    #                 item.youtube_id = selected['youtube_id']
-    #                 item.save()
-    #             else:
-    #                 type = selected['lesson_type']
-    #                 if(type == 'article'):
-    #                     type = Lesson.ARTICLE
-    #                 elif(type == 'quiz'):
-    #                     type = Lesson.QUIZ
-                        
-    #                 elif (type == 'video'):
-    #                     type = Lesson.VIDEO
-    #                 newlesson = Lesson.objects.create(
-    #                     course=course,
-    #                     title=selected['title'],
-    #                     slug=slugify(selected['title']),
-    #                     short_description=selected['short_description'],
-    #                     long_description=selected['long_description'],
-    #                     status=Lesson.PUBLISHED,
-    #                     lesson_type = type,
-    #                     youtube_id=selected['youtube_id']
-    #                 )
-    #                 if(type == Lesson.QUIZ):
-    #                     Quiz.objects.create(
-    #                             lesson = newlesson,
-    #                             question = selectedQuiz['question'],
-    #                             answer = selectedQuiz['answer'],
-    #                             op1 = selectedQuiz['op1'],
-    #                             op2 = selectedQuiz['op2'],
-    #                             op3 = selectedQuiz['op3']
-    #                     )
-                    
-    #         else:
-    #             lesson = Lesson.objects.get(id=item["id"])
-    #             lesson.delete()
-    # else:
-    #     print('abc')  
-    # course.save()
-    # # serializer = CourseListSerializer(course,data=request.data)
-    # # serializer.save()
-    # print(course)
     return Response()
 
 @api_view(['DELETE'])
@@ -251,6 +179,16 @@ def get_courses(request):
 
     serializer = CourseListSerializer(courses, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def get_my_courses(request):
+    print('\n\n\n\n\nget_my_courses\n\n\n\n\n')
+    print(request.user)
+    courses = Course.objects.filter(status=Course.PUBLISHED)
+    courses = courses.filter(created_by=request.user)
+    serializer = CourseListSerializer(courses, many=True)
+    return Response(serializer.data)
+
 
 @api_view(['GET'])
 @authentication_classes([])
