@@ -11,6 +11,7 @@ import Author from '../views/Author.vue'
 import MyAccount from '../views/dashboard/MyAccount.vue'
 import CreateCourse from '../views/dashboard/CreateCourse.vue'
 import MyCourse from '../views/dashboard/MyCourse.vue'
+import File from '../views/Flie.vue'
 
 const routes = [
   {
@@ -63,7 +64,13 @@ const routes = [
     path: '/dashboard/create-course/:slug',
     name: 'CreateCourse',
     component: CreateCourse
-  }
+  },
+  {
+    path: '/file',
+    name: 'File',
+    component: File
+  },
+
 ]
 
 const router = createRouter({

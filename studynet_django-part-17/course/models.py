@@ -96,3 +96,17 @@ class Quiz(models.Model):
 
     class Meta:
         verbose_name_plural = 'Quizzes'
+
+class File(models.Model):
+    name = models.CharField(max_length=255)
+    file = models.FileField(upload_to='files', blank=True, null=True)
+    description = models.CharField(max_length=1000)
+    def __str__(self):
+        return self.name
+    
+    def get_file(self):
+        if self.file:
+            return settings.WEBSITE_URL + self.file.url
+        else:
+            return None
+    

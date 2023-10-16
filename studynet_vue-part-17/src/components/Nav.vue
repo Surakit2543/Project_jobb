@@ -8,6 +8,7 @@
             <div class="navbar-start">
                 <router-link to="/" class="navbar-item">Home</router-link>
                 <router-link to="/about" class="navbar-item">About</router-link>
+                <router-link to="/file" class="navbar-item">File</router-link>
                 <router-link to="/courses" class="navbar-item">Courses</router-link>
                 
             </div>

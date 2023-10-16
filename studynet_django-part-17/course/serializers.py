@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 
 from rest_framework import serializers
 
-from .models import Course, Lesson, Comment, Category, Quiz
+from .models import Course, Lesson, Comment, Category, Quiz,File
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,3 +40,8 @@ class QuizSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quiz
         fields = ('id', 'lesson_id', 'question', 'answer', 'op1', 'op2', 'op3')
+
+class FileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = File
+        fields = ('id', 'name','description', 'file','get_file')

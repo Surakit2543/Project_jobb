@@ -1,4 +1,6 @@
 from random import randint
+from django.conf import settings
+from django.http import FileResponse
 
 from django.contrib.auth.models import User
 from django.shortcuts import render
@@ -8,8 +10,8 @@ from rest_framework import serializers,generics
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
-from .models import Course, Lesson, Comment, Category, Quiz
-from .serializers import CourseListSerializer, CourseDetailSerializer, LessonListSerializer, CommentsSerializer, CategorySerializer, QuizSerializer, UserSerializer
+from .models import Course, Lesson, Comment, Category, Quiz, File
+from .serializers import CourseListSerializer, CourseDetailSerializer, LessonListSerializer, CommentsSerializer, CategorySerializer, QuizSerializer, UserSerializer, FileSerializer
 import json
 @api_view(['POST'])
 def create_course(request):
@@ -245,3 +247,46 @@ def get_author_courses(request, user_id):
         'courses': courses_serializer.data,
         'created_by': user_serializer.data
     })
+
+@api_view(['POST'])
+def create_file(request):
+    file = File.objects.create(
+        name = request.data.get('name'),
+        file = request.FILES.get('file'),
+        description = request.data.get('description')
+    )
+    file.save()
+    return Response({'save': 'Success'})
+
+@api_view(['PUT'])
+def edit_file(request,id):
+    file = File.objects.get(id=id)
+    file.name = request.data.get('name')
+    file.description = request.data.get('description')
+    file.save()
+    return Response('Edit Success')
+
+
+@api_view(['GET'])
+@authentication_classes([])
+@permission_classes([])
+def get_file(request):
+    files = File.objects.all()
+    serializer = FileSerializer(files, many=True)
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+def delete_file(request,id):
+    file = File.objects.get(id=id)
+    file.delete()
+    return Response("Deleted")
+
+api_view(['GET'])
+@authentication_classes([])
+@permission_classes([])
+def downloadFile(request,id):
+    file = File.objects.get(id=id)
+    file_path = file.file.path
+    response = FileResponse(open(file_path, 'rb'))
+    response['Content-Disposition'] = f'attachment; filename="{file.name}"'
+    return response
