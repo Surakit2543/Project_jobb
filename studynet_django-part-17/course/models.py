@@ -101,6 +101,7 @@ class File(models.Model):
     name = models.CharField(max_length=255)
     file = models.FileField(upload_to='files', blank=True, null=True)
     description = models.CharField(max_length=1000)
+    categories = models.ManyToManyField(Category)
     def __str__(self):
         return self.name
     

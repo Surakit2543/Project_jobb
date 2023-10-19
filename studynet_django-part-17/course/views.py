@@ -255,6 +255,8 @@ def create_file(request):
         file = request.FILES.get('file'),
         description = request.data.get('description')
     )
+    for id in request.data.get('categories'):
+        file.categories.add(id)
     file.save()
     return Response({'save': 'Success'})
 
@@ -272,6 +274,10 @@ def edit_file(request,id):
 @permission_classes([])
 def get_file(request):
     files = File.objects.all()
+    category_id = request.GET.get('category_id', '')
+    if category_id:
+        files = files.filter(categories__in=[int(category_id)])
+
     serializer = FileSerializer(files, many=True)
     return Response(serializer.data)
 

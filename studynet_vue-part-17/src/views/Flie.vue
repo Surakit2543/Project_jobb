@@ -7,53 +7,124 @@
     </div>
 
     <section class="section">
-      <div class="columns is-multiline">
-        <div class="column is-3" v-for="file in Files" v-bind:key="file.id">
-          <div class="card">
-            <div class="card-image">
-              <figure class="image is-4by3">
-                <img v-if="!file.notCorrect" :src="file.get_file" alt="Placeholder image" />
-                <img v-if="file.notCorrect && ['pdf'].includes(file.fileType)" src="../assets/pdf.webp">
-                <img v-if="file.notCorrect && ['docm','docx'].includes(file.fileType)" src="../assets/word.png">
-                <img v-if="file.notCorrect && ['pptx'].includes(file.fileType)" src="../assets/pptx.png">
-                <img v-if="file.notCorrect && ['xls','xlc','xlsx'].includes(file.fileType)" src="../assets/excel.png">
-                <img v-if="file.notCorrect && !['pdf','xls','xlc','xlsx','docm','docx','pptx'].includes(file.fileType)" src="../assets/file.png">
-              </figure>
-            </div>
+      <div class="columns">
+        <div class="column is-2">
+          <aside class="menu">
+            <p class="menu-label">Categories</p>
 
-            <div class="card-content">
-              <div class="media">
-                <div class="media-content">
-                  <p class="is-size-5">{{ file.name }}</p>
+            <ul class="menu-list">
+              <li>
+                <a
+                  v-bind:class="{ 'is-active': activeCategory == null }"
+                  @click="setActiveCategory(null)"
+                >
+                  All courses
+                </a>
+              </li>
+              <li>
+                <a
+                  v-bind:class="{
+                    'is-active': activeCategory?.id == category.id,
+                  }"
+                  v-for="category in categories"
+                  v-bind:key="category.id"
+                  @click="setActiveCategory(category)"
+                  >{{ category.title }}</a
+                >
+              </li>
+            </ul>
+          </aside>
+        </div>
+        <div class="column is-10">
+          <div class="columns is-multiline">
+            <div class="column is-3" v-for="file in Files" v-bind:key="file.id">
+              <div class="card">
+                <div class="card-image">
+                  <figure class="image is-4by3">
+                    <img
+                      v-if="!file.notCorrect"
+                      :src="file.get_file"
+                      alt="Placeholder image"
+                    />
+                    <img
+                      v-if="file.notCorrect && ['pdf'].includes(file.fileType)"
+                      src="../assets/pdf.webp"
+                    />
+                    <img
+                      v-if="
+                        file.notCorrect &&
+                        ['docm', 'docx'].includes(file.fileType)
+                      "
+                      src="../assets/word.png"
+                    />
+                    <img
+                      v-if="file.notCorrect && ['pptx'].includes(file.fileType)"
+                      src="../assets/pptx.png"
+                    />
+                    <img
+                      v-if="
+                        file.notCorrect &&
+                        ['xls', 'xlc', 'xlsx'].includes(file.fileType)
+                      "
+                      src="../assets/excel.png"
+                    />
+                    <img
+                      v-if="
+                        file.notCorrect &&
+                        ![
+                          'pdf',
+                          'xls',
+                          'xlc',
+                          'xlsx',
+                          'docm',
+                          'docx',
+                          'pptx',
+                        ].includes(file.fileType)
+                      "
+                      src="../assets/file.png"
+                    />
+                  </figure>
+                </div>
+
+                <div class="card-content">
+                  <div class="media">
+                    <div class="media-content">
+                      <p class="is-size-5">{{ file.name }}</p>
+                    </div>
+                  </div>
+
+                  <div class="content">
+                    <p>{{ file.description }}</p>
+                  </div>
+                  <button
+                    class="button is-info mr-2"
+                    @click="DownloadFile(file)"
+                  >
+                    Download
+                  </button>
+                  <button
+                    class="button is-danger mr-2"
+                    style="float: right"
+                    @click="DeleteFile(file.id)"
+                  >
+                    delete
+                  </button>
+                  <button
+                    class="button is-primary mr-2"
+                    style="float: right"
+                    @click="EditFile(file)"
+                  >
+                    edit
+                  </button>
                 </div>
               </div>
 
-              <div class="content">
-                <p>{{ file.description }}</p>
-              </div>
-              <button class="button is-info mr-2" @click="DownloadFile(file)">
-                Download
-              </button>
-              <button
-                class="button is-danger mr-2"
-                style="float: right"
-                @click="DeleteFile(file.id)"
-              >
-                delete
-              </button>
-              <button
-                class="button is-primary mr-2"
-                style="float: right"
-                @click="EditFile(file)"
-              >
-                edit
-              </button>
+              <!-- <embed :src="file.get_file" type="application/pdf" width="100%" height="500px" /> -->
             </div>
           </div>
-
-          <!-- <embed :src="file.get_file" type="application/pdf" width="100%" height="500px" /> -->
         </div>
       </div>
+
       <button class="button is-primary mr-2" @click="AddFile()">Add</button>
     </section>
   </div>
@@ -67,26 +138,67 @@ export default {
       newFile: {
         name: "",
         file: null,
+        categories: [],
       },
       Files: null,
+      categories: [],
+      activeCategory: null,
     };
   },
   async mounted() {
+    this.getCategories();
     document.title = "About | StudyNet";
-    axios.get("courses/get_file/").then((response) => {
-      console.log(response.data);
-      this.Files = response.data;
-      this.Files.forEach(item => {
-        console.log(window.location.host)
-        if(['pdf','xls','xlc','xlsx','docm','docx','pptx'].includes(this.getFileType(item.get_file))){
-          item.notCorrect = true;
-          item.fileType = this.getFileType(item.get_file)
-        }
-      });
-    });
+    this.getFiles();
   },
   methods: {
+    setActiveCategory(category) {
+      console.log(category);
+      this.activeCategory = category;
+
+      this.getFiles();
+    },
+    getFiles() {
+      let url = "courses/get_file/";
+
+      if (this.activeCategory) {
+        url += "?category_id=" + this.activeCategory.id;
+      }
+
+      // axios.get(url).then((response) => {
+      //   console.log(response.data);
+
+      //   this.courses = response.data;
+      // });
+      console.log("GetFiles");
+      axios.get(url).then((response) => {
+        console.log(response.data);
+        this.Files = response.data;
+        this.Files.forEach((item) => {
+          if (
+            ["pdf", "xls", "xlc", "xlsx", "docm", "docx", "pptx"].includes(
+              this.getFileType(item.get_file)
+            )
+          ) {
+            item.notCorrect = true;
+            item.fileType = this.getFileType(item.get_file);
+          }
+        });
+      });
+    },
+    getCategories() {
+      console.log("getCategories");
+
+      axios.get("courses/get_categories/").then((response) => {
+        console.log(response.data);
+
+        this.categories = response.data;
+      });
+    },
     AddFile() {
+      var categoriesText = "";
+      this.categories.forEach((category) => {
+        categoriesText += ` <option key='${category.id}' value='${category.id}'> ${category.title} </option> `;
+      });
       this.$swal
         .fire({
           title: "Add File",
@@ -101,6 +213,12 @@ export default {
           <input autocapitalize="off" class="swal2-input" id="FileName" style="width:23rem;" placeholder="" type="text">
           <p>File Description</p>
           <input autocapitalize="off" class="swal2-input" id="FileDescription" style="width:23rem;" placeholder="" type="text">
+          <p>Categories</p>
+          <div class="select is-multiple ">
+            <select multiple size="5" id="FileCategories">
+                ${categoriesText}
+            </select>
+          </div>
           `,
         })
         .then((result) => {
@@ -110,10 +228,15 @@ export default {
             var fileName = document.getElementById("FileName").value;
             var fileDescription =
               document.getElementById("FileDescription").value;
+            var fileCategories =
+              document.getElementById("FileCategories").value;
+            var categoryArray = [];
+            categoryArray.push(fileCategories)
             const formData = new FormData();
             formData.append("name", fileName);
             formData.append("description", fileDescription);
             formData.append("file", file.files[0]);
+            formData.append("categories", categoryArray.join(','));
             axios
               .post("courses/create_file/", formData, {
                 headers: {

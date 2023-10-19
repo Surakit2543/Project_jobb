@@ -44,4 +44,4 @@ class QuizSerializer(serializers.ModelSerializer):
 class FileSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
-        fields = ('id', 'name','description', 'file','get_file')
+        fields = ('id', 'name','description', 'file','get_file','categories')
