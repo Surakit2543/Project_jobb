@@ -78,7 +78,7 @@ export default {
       this.Files = response.data;
       this.Files.forEach(item => {
         console.log(window.location.host)
-        if(["pdf","docm","docx","xlsx","pttx"].includes(this.getFileType(item.get_file))){
+        if(['pdf','xls','xlc','xlsx','docm','docx','pptx'].includes(this.getFileType(item.get_file))){
           item.notCorrect = true;
           item.fileType = this.getFileType(item.get_file)
         }
