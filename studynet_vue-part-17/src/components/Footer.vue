@@ -1,5 +1,5 @@
 <template>
     <footer class="footer">
-        <p class="has-text-centered">Copyright (c) 2021</p>
+        <p class="has-text-centered"> Internal use only </p>
     </footer>
 </template>

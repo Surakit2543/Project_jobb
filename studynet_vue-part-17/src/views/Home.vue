@@ -2,9 +2,9 @@
   <div class="home">
     <div class="hero is-info is-medium">
       <div class="hero-body has-text-centered">
-        <h1 class="title">Welcome to ballaa</h1>
+        <h1 class="title">Training and Tooling System for Presales department INET</h1>
 
-        <h2 class="subtitle">An online place for learning what you want</h2>
+        <h2 class="subtitle">Internal use only</h2>
       </div>
     </div>
 
@@ -15,9 +15,9 @@
             <div class="box has-text-centered">
               <span class="icon is-size-2 has-text-info"><i class="far fa-clock"></i></span>
 
-              <h2 class="is-size-4 mt-4 mb-4">Study at your own pace</h2>
+              <h2 class="is-size-4 mt-4 mb-4">E-Learning</h2>
 
-              <p>This is just some random placeholder text</p>
+              <p>E-learing สำหรับพนักงานใหม่เบื้องต้น</p>
             </div>
           </div>
 
@@ -25,9 +25,9 @@
             <div class="box has-text-centered">
               <span class="icon is-size-2 has-text-info"><i class="far fa-comments"></i></span>
 
-              <h2 class="is-size-4 mt-4 mb-4">Study with others</h2>
+              <h2 class="is-size-4 mt-4 mb-4">Calulate Package</h2>
 
-              <p>This is just some random placeholder text</p>
+              <p>Tooling สำหรับการคำณวน Package ITEM </p>
             </div>
           </div>
 
@@ -35,9 +35,9 @@
             <div class="box has-text-centered">
               <span class="icon is-size-2 has-text-info"><i class="fas fa-home"></i></span>
 
-              <h2 class="is-size-4 mt-4 mb-4">Study from your home</h2>
+              <h2 class="is-size-4 mt-4 mb-4">Document</h2>
 
-              <p>This is just some random placeholder text</p>
+              <p>ศูนย์รวมเอกสารสำหรับการทำงานในแผนก Presale</p>
             </div>
           </div>
 
